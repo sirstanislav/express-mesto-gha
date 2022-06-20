@@ -12,7 +12,8 @@ module.exports.createUser = (req, res) => {
           .send(
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
-      } else if (name.length < 2) {
+      }
+      if (name.length < 2) {
         return res
           .status(400)
           .send(
