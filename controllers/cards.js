@@ -27,7 +27,17 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: "Ошибка" }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send(
+            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+          );
+      } else {
+        return res.status(500).send({ message: "Ошибка" });
+      }
+    });
 };
 
 module.exports.setLike = (req, res) => {
@@ -37,7 +47,17 @@ module.exports.setLike = (req, res) => {
     { new: true }
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: "Ошибка" }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send(
+            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+          );
+      } else {
+        return res.status(500).send({ message: "Ошибка" });
+      }
+    });
 };
 
 module.exports.unsetLike = (req, res) => {
@@ -48,6 +68,14 @@ module.exports.unsetLike = (req, res) => {
   )
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name )
-      res.status(500).send({ message: "Ошибка" })})
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send(
+            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+          );
+      } else {
+        return res.status(500).send({ message: "Ошибка" });
+      }
+    });
 };
