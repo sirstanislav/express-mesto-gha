@@ -3,9 +3,7 @@ const Card = require("../models/card");
 module.exports.returnCards = (req, res) => {
   Card.find()
     .then((card) => res.send({ data: card }))
-    .catch((err) =>
-      res.status(500).send(`Ошибка загрузки карточек: ${err.message}`)
-    );
+    .catch((err) => res.status(500).send({ message: "Ошибка" }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -21,7 +19,7 @@ module.exports.createCard = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send(`Ошибка: ${err.message}`);
+        res.status(500).send({ message: "Ошибка" });
       }
     });
 };
@@ -29,9 +27,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
-    .catch((err) =>
-      res.status(500).send(`Ошибка удаления карточки: ${err.message}`)
-    );
+    .catch((err) => res.status(500).send({ message: "Ошибка" }));
 };
 
 module.exports.setLike = (req, res) => {
@@ -41,7 +37,7 @@ module.exports.setLike = (req, res) => {
     { new: true }
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send(`Ошибка лайка: ${err.message}`));
+    .catch((err) => res.status(500).send({ message: "Ошибка" }));
 };
 
 module.exports.unsetLike = (req, res) => {
@@ -51,5 +47,5 @@ module.exports.unsetLike = (req, res) => {
     { new: true }
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send(`Ошибка лайка: ${err.message}`));
+    .catch((err) => res.status(500).send({ message: "Ошибка" }));
 };

@@ -13,7 +13,7 @@ module.exports.createUser = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send(`Ошибка: ${err.message}`);
+        res.status(500).send({message: "Ошибка"});
       }
     });
 };
@@ -23,14 +23,14 @@ module.exports.findUsers = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       console.log(err);
-      res.status(500).send(`Ошибка: ${err.message}`);
+      res.status(500).send({message: "Ошибка"});
     });
 };
 
 module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send(`Ошибка: ${err.message}`));
+    .catch((err) => res.status(500).send({message: "Ошибка"}));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -46,7 +46,7 @@ module.exports.updateProfile = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send(`Ошибка: ${err.message}`);
+        res.status(500).send({message: "Ошибка"});
       }
     });
 };
@@ -64,7 +64,7 @@ module.exports.updateAvatar = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send(`Ошибка: ${err.message}`);
+        res.status(500).send({message: "Ошибка"});
       }
     });
 };
