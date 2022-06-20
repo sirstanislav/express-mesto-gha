@@ -10,15 +10,20 @@ const { PORT = 3000 } = process.env;
 
 mongoose.connect("mongodb://localhost:27017/mestodb");
 
-app.use("/users", require("./routes/users"));
+app.use((req, res, next) => {
+  req.user = {
+    _id: "62afb478d2b756cdf559f0d0", // вставьте сюда _id созданного в предыдущем пункте пользователя
+  };
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: "62af3e84442b7924622b002b", // вставьте сюда _id созданного в предыдущем пункте пользователя
-//   };
+  next();
+});
 
-//   next();
-// });
+app.use("/", require("./routes/users"));
+app.use("/", require("./routes/cards"));
+
+app.use((req, res) => {
+  res.status(404).send({ message: 'Страницы не существует' });
+});
 
 app.listen(PORT, () => {
   console.log("Hello");

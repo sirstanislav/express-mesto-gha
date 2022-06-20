@@ -5,16 +5,16 @@ const {
   deleteCard,
   setLike,
   unsetLike,
-} = require("../controllers/users");
+} = require("../controllers/cards");
 
-router.get("/", returnCards);
+router.get("/cards", returnCards);
 
-router.post("/", createCard);
+router.post("/cards", createCard);
 
-router.delete("/:id", deleteCard);
+router.delete("/cards/:cardId", deleteCard);
 
-router.put("/:cardId/likes", setLike);
+router.put("/cards/:cardId/likes", setLike);
 
-router.delete("/:cardId/likes", unsetLike);
+router.delete("/cards/:cardId/likes", unsetLike);
 
 module.exports = router;
