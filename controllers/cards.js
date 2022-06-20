@@ -2,7 +2,7 @@ const Card = require("../models/card");
 
 module.exports.returnCards = (req, res) => {
   Card.find()
-    .then((user) => res.send({ data: user }))
+    .then((card) => res.send({ data: card }))
     .catch((err) =>
       res.status(500).send(`Ошибка загрузки карточек: ${err.message}`)
     );
@@ -12,15 +12,23 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((user) => res.send({ data: user }))
-    .catch((err) =>
-      res.status(500).send(`Ошибка создания карточки: ${err.message}`)
-    );
+    .then((card) => res.send({ data: card }))
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send(
+            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+          );
+      } else {
+        res.status(500).send(`Ошибка: ${err.message}`);
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((user) => res.send({ data: user }))
+    .then((card) => res.send({ data: card }))
     .catch((err) =>
       res.status(500).send(`Ошибка удаления карточки: ${err.message}`)
     );
@@ -32,7 +40,7 @@ module.exports.setLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => res.status(500).send(`Ошибка лайка: ${err.message}`));
 };
 
@@ -42,6 +50,6 @@ module.exports.unsetLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => res.status(500).send(`Ошибка лайка: ${err.message}`));
 };
