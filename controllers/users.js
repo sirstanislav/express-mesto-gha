@@ -30,7 +30,7 @@ module.exports.findUsers = (req, res) => {
 module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({message: "Ошибка"}));
+    .catch((err) => res.status(500).send({message: err}));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -46,7 +46,7 @@ module.exports.updateProfile = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send({message: "Ошибка"});
+        res.status(500).send({message: "Ошибка "});
       }
     });
 };

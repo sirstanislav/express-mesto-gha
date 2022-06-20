@@ -19,7 +19,7 @@ module.exports.createCard = (req, res) => {
             "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
           );
       } else {
-        res.status(500).send({ message: "Ошибка" });
+        return res.status(500).send({ message: "Ошибка" });
       }
     });
 };
@@ -47,5 +47,7 @@ module.exports.unsetLike = (req, res) => {
     { new: true }
   )
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: "Ошибка" }));
+    .catch((err) => {
+      if (err.name )
+      res.status(500).send({ message: "Ошибка" })})
 };
