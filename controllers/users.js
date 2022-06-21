@@ -25,12 +25,20 @@ module.exports.findUsers = (req, res) => {
     });
 };
 
-module.exports.findUserById = (req, res) => {
+module.exports.findUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .then((user) => res.send(user))
+    .then((user) => {
+      if (!user) {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+          return
+      }
+      res.send(user);
+    })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(404).send({
+        return res.status(400).send({
           message: "Переданы некорректный ID",
         });
       } else {
@@ -50,9 +58,9 @@ module.exports.updateProfile = (req, res) => {
       runValidators: true, // данные будут валидированы перед изменением
     }
   )
-  .then((user) => {
-    res.send(user);
-  })
+    .then((user) => {
+      res.send(user);
+    })
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError") {
