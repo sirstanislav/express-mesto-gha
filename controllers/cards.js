@@ -4,7 +4,7 @@ module.exports.returnCards = (req, res) => {
   Card.find()
     .then((card) => res.send(card))
     .catch((err) =>
-      res.status(500).send({ message: "Ошибка получения карточек" })
+      res.status(500).send({ message: "500 — Ошибка по умолчанию" })
     );
 };
 
@@ -15,9 +15,11 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Ошибка создания карточки" });
+        return res.status(400).send({
+          message: "400 — Переданы некорректные данные при создании карточки",
+        });
       } else {
-        return res.status(500).send({ message: "Ошибка" });
+        return res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -28,17 +30,16 @@ module.exports.deleteCard = (req, res) => {
       if (!card) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному _id не найден" });
+          .send({ message: "404 — Карточка с указанным _id не найдена." });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
-      console.log(err)
       if (err.name === "CastError") {
         return res.status(400).send({ message: "Ошибка удаления карточки" });
       } else {
-        return res.status(500).send({ message: "Ошибка" });
+        return res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -53,16 +54,18 @@ module.exports.setLike = (req, res) => {
       if (!card) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному _id не найден" });
+          .send({ message: "404 — Передан несуществующий _id карточки" });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Ошибка лайка" });
+      if (err.name === "CastError") {
+        return res.status(400).send({
+          message: "400 - Переданы некорректные данные для постановки лайка",
+        });
       } else {
-        return res.status(500).send({ message: "Ошибка" });
+        return res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -77,16 +80,18 @@ module.exports.unsetLike = (req, res) => {
       if (!card) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному _id не найден" });
+          .send({ message: "404 — Передан несуществующий _id карточки" });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Ошибка дизлайка" });
+      if (err.name === "CastError") {
+        return res.status(400).send({
+          message: "400 - Переданы некорректные данные для снятии лайка",
+        });
       } else {
-        return res.status(500).send({ message: "Ошибка" });
+        return res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };

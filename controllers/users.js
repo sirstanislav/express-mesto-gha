@@ -9,10 +9,11 @@ module.exports.createUser = (req, res) => {
       console.log(err);
       if (err.name === "ValidationError") {
         return res.status(400).send({
-          message: "Переданы некорректные данные в полях name, about, avatar",
+          message:
+            "400 — Переданы некорректные данные при создании пользователя",
         });
       } else {
-        res.status(500).send({ message: "Ошибка" });
+        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -21,7 +22,7 @@ module.exports.findUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
     .catch((err) => {
-      res.status(500).send({ message: "Ошибка" });
+      res.status(500).send({ message: "500 — Ошибка по умолчанию" });
     });
 };
 
@@ -29,20 +30,20 @@ module.exports.findUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res
-          .status(404)
-          .send({ message: "Пользователь по указанному _id не найден" });
-          return
+        res.status(404).send({
+          message: "404 - Получение пользователя с несуществующим в БД id",
+        });
+        return;
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(400).send({
-          message: "Переданы некорректный ID",
+          message: "400 - Получение пользователя с некорректным id",
         });
       } else {
-        res.status(500).send({ message: "Ошибка" });
+        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -64,11 +65,11 @@ module.exports.updateProfile = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: "Ошибка обновления name, about" });
+        return res.status(400).send({
+          message: "400 — Переданы некорректные данные при обновлении профиля",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка " });
+        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
@@ -89,11 +90,11 @@ module.exports.updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: "Переданы некорректные данные в поле avatar" });
+        return res.status(400).send({
+          message: "400 — Переданы некорректные данные при обновлении аватара",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка" });
+        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
       }
     });
 };
