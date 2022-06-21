@@ -24,7 +24,15 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send(card))
+    .then((card) => {
+      if (!card) {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+        return;
+      }
+      res.send(card);
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: "Ошибка удаления карточки" });
@@ -45,7 +53,7 @@ module.exports.setLike = (req, res) => {
         res
           .status(404)
           .send({ message: "Пользователь по указанному _id не найден" });
-          return
+        return;
       }
       res.send(card);
     })
@@ -64,15 +72,15 @@ module.exports.unsetLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
-  .then((card) => {
-    if (!card) {
-      res
-        .status(404)
-        .send({ message: "Пользователь по указанному _id не найден" });
-        return
-    }
-    res.send(card);
-  })
+    .then((card) => {
+      if (!card) {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+        return;
+      }
+      res.send(card);
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: "Ошибка дизлайка" });
