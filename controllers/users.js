@@ -51,7 +51,6 @@ module.exports.updateProfile = (req, res) => {
     }
   )
   .then((user) => {
-    console.log(user)
     res.send(user);
   })
     .catch((err) => {
@@ -78,7 +77,6 @@ module.exports.updateAvatar = (req, res) => {
     }
   )
     .then((user) => {
-      console.log(user)
       res.send(user);
     })
     .catch((err) => {
