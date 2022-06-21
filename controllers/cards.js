@@ -40,10 +40,18 @@ module.exports.setLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((card) => res.send(card))
+    .then((card) => {
+      if (!card) {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+          return
+      }
+      res.send(card);
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({message: "Ошибка лайка"});
+        return res.status(400).send({ message: "Ошибка лайка" });
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
@@ -56,10 +64,18 @@ module.exports.unsetLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
-    .then((card) => res.send(card))
+  .then((card) => {
+    if (!card) {
+      res
+        .status(404)
+        .send({ message: "Пользователь по указанному _id не найден" });
+        return
+    }
+    res.send(card);
+  })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({message: "Ошибка дизлайка"});
+        return res.status(400).send({ message: "Ошибка дизлайка" });
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
