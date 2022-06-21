@@ -29,7 +29,6 @@ module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send(user))
     .catch((err) => {
-      console.log(err);
       if (err.name === "CastError") {
         return res.status(400).send({
           message: "Переданы некорректный ID",
@@ -43,9 +42,17 @@ module.exports.findUserById = (req, res) => {
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    {
+      new: true, // обработчик then получит на вход обновлённую запись
+      runValidators: true, // данные будут валидированы перед изменением
+    }
+  )
     .then((user) => res.send(user))
     .catch((err) => {
+      console.log(err);
       if (err.name === "ValidationError") {
         return res
           .status(400)
@@ -59,7 +66,14 @@ module.exports.updateProfile = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    {
+      new: true, // обработчик then получит на вход обновлённую запись
+      runValidators: true, // данные будут валидированы перед изменением
+    }
+  )
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
