@@ -4,15 +4,13 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError") {
         return res
           .status(400)
-          .send(
-            "Переданы некорректные данные в полях name, about, avatar"
-          );
+          .send("Переданы некорректные данные в полях name, about, avatar");
       } else {
         res.status(500).send({ message: "Ошибка" });
       }
@@ -21,7 +19,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.findUsers = (req, res) => {
   User.find({})
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       console.log(err);
       res.status(500).send({ message: "Ошибка" });
@@ -30,7 +28,7 @@ module.exports.findUsers = (req, res) => {
 
 module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => res.status(500).send({ message: "Ошибка" }));
 };
 
@@ -38,14 +36,10 @@ module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send(
-            "Ошибка обновления name, about"
-          );
+        return res.status(400).send("Ошибка обновления name, about");
       } else {
         res.status(500).send({ message: "Ошибка " });
       }
@@ -56,14 +50,12 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res
           .status(400)
-          .send(
-            "Переданы некорректные данные в поле avatar"
-          );
+          .send("Переданы некорректные данные в поле avatar");
       } else {
         res.status(500).send({ message: "Ошибка" });
       }

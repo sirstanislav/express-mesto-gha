@@ -2,7 +2,7 @@ const Card = require("../models/card");
 
 module.exports.returnCards = (req, res) => {
   Card.find()
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => res.status(500).send({ message: "Ошибка получения карточек" }));
 };
 
@@ -10,7 +10,7 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(400).send("Ошибка создания карточки");
@@ -22,7 +22,7 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res
@@ -42,7 +42,7 @@ module.exports.setLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res
@@ -62,7 +62,7 @@ module.exports.unsetLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res
