@@ -3,7 +3,9 @@ const Card = require("../models/card");
 module.exports.returnCards = (req, res) => {
   Card.find()
     .then((card) => res.send(card))
-    .catch((err) => res.status(500).send({ message: "Ошибка получения карточек" }));
+    .catch((err) =>
+      res.status(500).send({ message: "Ошибка получения карточек" })
+    );
 };
 
 module.exports.createCard = (req, res) => {
@@ -13,7 +15,7 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send("Ошибка создания карточки");
+        return res.status(400).send({ message: "Ошибка создания карточки" });
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
@@ -25,11 +27,7 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send(
-            "Ошибка удаления карточки"
-          );
+        return res.status(400).send({ message: "Ошибка удаления карточки" });
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
@@ -45,11 +43,7 @@ module.exports.setLike = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send(
-            "Ошибка лайка"
-          );
+        return res.status(400).send({message: "Ошибка лайка"});
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
@@ -65,11 +59,7 @@ module.exports.unsetLike = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send(
-            "Ошибка дизлайка"
-          );
+        return res.status(400).send({message: "Ошибка дизлайка"});
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }

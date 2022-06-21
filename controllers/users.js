@@ -10,7 +10,7 @@ module.exports.createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(400)
-          .send("Переданы некорректные данные в полях name, about, avatar");
+          .send({message: "Переданы некорректные данные в полях name, about, avatar"});
       } else {
         res.status(500).send({ message: "Ошибка" });
       }
@@ -39,7 +39,7 @@ module.exports.updateProfile = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send("Ошибка обновления name, about");
+        return res.status(400).send({message: "Ошибка обновления name, about"});
       } else {
         res.status(500).send({ message: "Ошибка " });
       }
@@ -55,7 +55,7 @@ module.exports.updateAvatar = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(400)
-          .send("Переданы некорректные данные в поле avatar");
+          .send({message: "Переданы некорректные данные в поле avatar"});
       } else {
         res.status(500).send({ message: "Ошибка" });
       }
