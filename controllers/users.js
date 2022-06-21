@@ -21,13 +21,7 @@ module.exports.findUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: "Ошибка обновления name, about" });
-      } else {
-        res.status(500).send({ message: "Ошибка " });
-      }
+      res.status(500).send({ message: "Ошибка" });
     });
 };
 
@@ -36,7 +30,7 @@ module.exports.findUserById = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({
+        return res.status(404).send({
           message: "Переданы некорректный ID",
         });
       } else {
