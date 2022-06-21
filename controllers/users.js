@@ -21,7 +21,13 @@ module.exports.findUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
     .catch((err) => {
-      res.status(500).send({ message: "Ошибка" });
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send({ message: "Ошибка обновления name, about" });
+      } else {
+        res.status(500).send({ message: "Ошибка " });
+      }
     });
 };
 
