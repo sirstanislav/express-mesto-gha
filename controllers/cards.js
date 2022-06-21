@@ -34,7 +34,8 @@ module.exports.deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      console.log(err)
+      if (err.name === "CastError") {
         return res.status(400).send({ message: "Ошибка удаления карточки" });
       } else {
         return res.status(500).send({ message: "Ошибка" });
