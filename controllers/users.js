@@ -8,11 +8,9 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({
-            message: "Переданы некорректные данные в полях name, about, avatar",
-          });
+        return res.status(400).send({
+          message: "Переданы некорректные данные в полях name, about, avatar",
+        });
       } else {
         res.status(500).send({ message: "Ошибка" });
       }
@@ -23,7 +21,6 @@ module.exports.findUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
     .catch((err) => {
-      console.log(err);
       res.status(500).send({ message: "Ошибка" });
     });
 };
@@ -33,12 +30,10 @@ module.exports.findUserById = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       console.log(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({
-            message: "Переданы некорректный ID",
-          });
+      if (err.name === "CastError") {
+        return res.status(400).send({
+          message: "Переданы некорректный ID",
+        });
       } else {
         res.status(500).send({ message: "Ошибка" });
       }
