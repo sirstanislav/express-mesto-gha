@@ -3,7 +3,7 @@ const Card = require("../models/card");
 module.exports.returnCards = (req, res) => {
   Card.find()
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: "Ошибка" }));
+    .catch((err) => res.status(500).send({ message: "Ошибка получения карточек" }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -13,11 +13,7 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send(
-            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
-          );
+        return res.status(400).send("Ошибка создания карточки");
       } else {
         return res.status(500).send({ message: "Ошибка" });
       }
@@ -32,7 +28,7 @@ module.exports.deleteCard = (req, res) => {
         return res
           .status(400)
           .send(
-            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+            "Ошибка удаления карточки"
           );
       } else {
         return res.status(500).send({ message: "Ошибка" });
@@ -52,7 +48,7 @@ module.exports.setLike = (req, res) => {
         return res
           .status(400)
           .send(
-            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+            "Ошибка лайка"
           );
       } else {
         return res.status(500).send({ message: "Ошибка" });
@@ -72,7 +68,7 @@ module.exports.unsetLike = (req, res) => {
         return res
           .status(400)
           .send(
-            "Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля"
+            "Ошибка дизлайка"
           );
       } else {
         return res.status(500).send({ message: "Ошибка" });
