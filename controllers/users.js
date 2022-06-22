@@ -1,4 +1,5 @@
-const User = require("../models/user");
+const User = require('../models/user');
+const error = require('../errors/errors');
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -6,45 +7,41 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      console.log(err);
-      if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message:
-            "400 — Переданы некорректные данные при создании пользователя",
-        });
-      } else {
-        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
-      }
+      error(
+        err,
+        res,
+        'ValidationError',
+        '400 — Переданы некорректные данные при создании пользователя',
+      );
     });
 };
 
 module.exports.findUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
-    .catch((err) => {
-      res.status(500).send({ message: "500 — Ошибка по умолчанию" });
+    .catch(() => {
+      res.status(500).send({ message: '500 — Ошибка по умолчанию' });
     });
 };
 
-module.exports.findUserById = (req, res, next) => {
+module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         res.status(404).send({
-          message: "404 - Получение пользователя с несуществующим в БД id",
+          message: '404 - Получение пользователя с несуществующим в БД id',
         });
         return;
       }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "400 - Получение пользователя с некорректным id",
-        });
-      } else {
-        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
-      }
+      error(
+        err,
+        res,
+        'ValidationError',
+        '400 —  Получение пользователя с некорректным id',
+      );
     });
 };
 
@@ -57,20 +54,18 @@ module.exports.updateProfile = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    }
+    },
   )
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      console.log(err);
-      if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "400 — Переданы некорректные данные при обновлении профиля",
-        });
-      } else {
-        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
-      }
+      error(
+        err,
+        res,
+        'ValidationError',
+        '400 —  Переданы некорректные данные при обновлении профиля',
+      );
     });
 };
 
@@ -83,18 +78,17 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    }
+    },
   )
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "400 — Переданы некорректные данные при обновлении аватара",
-        });
-      } else {
-        res.status(500).send({ message: "500 — Ошибка по умолчанию" });
-      }
+      error(
+        err,
+        res,
+        'ValidationError',
+        '400 — Переданы некорректные данные при обновлении аватара',
+      );
     });
 };

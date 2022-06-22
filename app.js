@@ -1,6 +1,7 @@
-const server = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
+const server = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
 const app = server();
 
 app.use(bodyParser.json()); // для собирания JSON-формата
@@ -8,23 +9,22 @@ app.use(bodyParser.urlencoded({ extended: true })); // для приёма ве�
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect("mongodb://localhost:27017/mestodb");
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "62b05cfbbe0afc7359f537cf", // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '62b05cfbbe0afc7359f537cf', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
 
   next();
 });
 
-app.use("/", require("./routes/users"));
-app.use("/", require("./routes/cards"));
+app.use('/', require('./routes/users'));
+app.use('/', require('./routes/cards'));
 
 app.use((req, res) => {
-  res.status(404).send({ message: "Страницы не существует" });
+  res.status(404).send({ message: 'Страницы не существует' });
 });
 
 app.listen(PORT, () => {
-  console.log("Hello");
 });
