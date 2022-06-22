@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const error = require('../errors/errors');
+const { error } = require('../errors/errors');
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;

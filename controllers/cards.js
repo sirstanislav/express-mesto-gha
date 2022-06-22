@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const error = require('../errors/errors');
+const { error } = require('../errors/errors');
 
 module.exports.returnCards = (req, res) => {
   Card.find()
