@@ -26,22 +26,23 @@ module.exports.findUsers = (req, res) => {
 
 module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error('NoValidId'))
     .then((user) => {
-      if (!user) {
-        res.status(404).send({
-          message: '404 - Получение пользователя с несуществующим в БД id',
-        });
-        return;
-      }
       res.send(user);
     })
     .catch((err) => {
-      error(
-        err,
-        res,
-        'CastError',
-        '400 —  Получение пользователя с некорректным id',
-      );
+      if (err.message === 'NoValidId') {
+        res.status(404).send({
+          message: '404 - Получение пользователя с несуществующим в БД id',
+        });
+      } else {
+        error(
+          err,
+          res,
+          'CastError',
+          '400 —  Получение пользователя с некорректным id',
+        );
+      }
     });
 };
 

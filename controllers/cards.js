@@ -24,22 +24,17 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(new Error('NoValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(404)
-          .send({ message: '404 — Карточка с указанным _id не найдена.' });
-        return;
-      }
       res.send(card);
     })
     .catch((err) => {
-      error(
-        err,
-        res,
-        'CastError',
-        '400 - Ошибка удаления карточки',
-      );
+      if (err.message === 'NoValidId') {
+        res
+          .status(404)
+          .send({ message: '404 — Карточка с указанным _id не найдена.' });
+      }
+      error(err, res, 'CastError', '400 - Ошибка удаления карточки');
     });
 };
 
@@ -49,16 +44,16 @@ module.exports.setLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail(new Error('NoValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(404)
-          .send({ message: '404 — Передан несуществующий _id карточки' });
-        return;
-      }
       res.send(card);
     })
     .catch((err) => {
+      if (err.message === 'NoValidId') {
+        res
+          .status(404)
+          .send({ message: '404 — Передан несуществующий _id карточки' });
+      }
       error(
         err,
         res,
@@ -74,16 +69,16 @@ module.exports.unsetLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail(new Error('NoValidId'))
     .then((card) => {
-      if (!card) {
-        res
-          .status(404)
-          .send({ message: '404 — Передан несуществующий _id карточки' });
-        return;
-      }
       res.send(card);
     })
     .catch((err) => {
+      if (err.message === 'NoValidId') {
+        res
+          .status(404)
+          .send({ message: '404 — Передан несуществующий _id карточки' });
+      }
       error(
         err,
         res,
