@@ -39,7 +39,7 @@ module.exports.findUserById = (req, res) => {
       error(
         err,
         res,
-        'ValidationError',
+        'CastError',
         '400 —  Получение пользователя с некорректным id',
       );
     });
