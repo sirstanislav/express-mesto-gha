@@ -24,6 +24,8 @@ app.use((req, res, next) => {
 
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
+app.use('/', require('./routes/createUser'));
+app.use('/', require('./routes/login'));
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
