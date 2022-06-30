@@ -1,19 +1,42 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { error } = require('../errors/errors');
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.send(user))
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+      res.send({ token });
+    })
     .catch((err) => {
-      error(
-        err,
-        res,
-        'ValidationError',
-        '400 — Переданы некорректные данные при создании пользователя',
-      );
+      res.status(401).send({ message: err.message });
     });
+};
+
+module.exports.createUser = (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    })
+      .then((user) => {
+        res.status(200).send({ _id: user.id, email: user.email });
+      })
+      .catch((err) => {
+        console.log(err);
+        error(
+          err,
+          res,
+          'ValidationError',
+          '400 — Переданы некорректные данные при создании пользователя',
+        );
+      }));
 };
 
 module.exports.findUsers = (req, res) => {
