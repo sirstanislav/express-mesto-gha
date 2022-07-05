@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const { error } = require('../errors/errors');
 
 module.exports.returnCards = (req, res) => {
+  console.log(req.user);
   Card.find()
     .then((card) => res.send(card))
     .catch(() => res.status(500).send({ message: '500 — Ошибка по умолчанию' }));
