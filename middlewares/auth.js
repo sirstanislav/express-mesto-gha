@@ -1,33 +1,24 @@
 const jwt = require('jsonwebtoken');
-const { token } = require('../controllers/users');
 
 let payload;
 
-const handleAuthError = (res) => {
-  res
-    .status(401)
-    .send({ message: 'Необходима авторизация' });
-};
+const isAuthorized = (req, res, next) => {
+  const auth = req.headers.authorization;
 
-// const extractBearerToken = (authorization) => authorization.replace('Bearer ', '');
-
-const auth = (req, res, next) => {
-  if (!token) {
-    console.log(token);
-    return handleAuthError(res);
+  if (!auth) {
+    return res.status(401).send({ message: 'Авторизуйтесь для доступа!' });
   }
 
-  // const token = extractBearerToken(authorization);
+  const token = auth.replace('Bearer ', '');
 
   try {
-    payload = jwt.verify(token, 'super-strong-secret');
+    payload = jwt.verify(token, 'secret');
   } catch (err) {
-    return handleAuthError(res);
+    return res.status(401).send({ message: 'Авторизуйтесь для доступа!' });
   }
 
-  // req.user = payload; // записываем пейлоуд в объект запроса
-
-  return next(); // пропускаем запрос дальше
+  req.user = payload;
+  return next();
 };
 
-module.exports = { auth, payload };
+module.exports = { isAuthorized };

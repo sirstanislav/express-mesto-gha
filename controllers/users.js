@@ -8,7 +8,7 @@ module.exports.login = (req, res) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '24h' });
       res.send({ token });
     })
     .catch((err) => {
@@ -21,7 +21,11 @@ module.exports.createUser = (req, res) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
+  if (!password) {
+    return res.status(401).send({ message: 'hahahah' });
+  }
+
+  return bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     })
@@ -29,7 +33,6 @@ module.exports.createUser = (req, res) => {
         res.status(200).send({ _id: user.id, email: user.email });
       })
       .catch((err) => {
-        console.log(err);
         error(
           err,
           res,

@@ -6,7 +6,7 @@ const {
   login,
   createUser,
 } = require('./controllers/users');
-const { auth, payload } = require('./middlewares/auth');
+const { isAuthorized } = require('./middlewares/auth');
 
 const app = server();
 
@@ -19,19 +19,11 @@ const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: payload, // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use('/', auth, require('./routes/users'));
-app.use('/', auth, require('./routes/cards'));
+app.use('/', isAuthorized, require('./routes/users'));
+app.use('/', isAuthorized, require('./routes/cards'));
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
