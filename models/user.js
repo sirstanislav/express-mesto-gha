@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const isEmail = require('validator/lib/isEmail'); // import only a subset of the library
+const isURL = require('validator/lib/isURL'); // import only a subset of the library
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -10,9 +11,19 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
   },
   about: {
-    type: String, required: true, minlength: 2, maxlength: 30,
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
   },
-  avatar: { type: String, required: true },
+  avatar: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (v) => isURL(v),
+      message: () => 'Неверный формат ссылки на изображение',
+    },
+  },
   email: {
     type: String,
     required: true,
@@ -31,7 +42,8 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password') // this — это модель login
+  return this.findOne({ email })
+    .select('+password') // this — это модель login
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильный .then(user)'));
