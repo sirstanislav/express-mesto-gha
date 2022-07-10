@@ -31,20 +31,28 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
-    avatar: Joi.string().required(),
+    avatar: Joi.string().required().uri(),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-  }),
+  }).unknown(true),
 }), createUser);
-
-// обработчики ошибок
-app.use(errors()); // обработчик ошибок celebrate
 
 app.use('/', isAuthorized, require('./routes/users'));
 app.use('/', isAuthorized, require('./routes/cards'));
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
+});
+
+// обработчики ошибок
+app.use(errors()); // обработчик ошибок celebrate
+
+// здесь обрабатываем все ошибки
+app.use((err, req, res, next) => {
+  if (err.statusCode) {
+    return res.status(err.statusCode).send({ message: err.message });
+  }
+  return res.status(500).send({ message: 'На сервере произошла ошибка' });
 });
 
 app.listen(PORT, () => {

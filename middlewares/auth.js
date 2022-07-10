@@ -2,11 +2,17 @@ const jwt = require('jsonwebtoken');
 
 let payload;
 
+const trowUnauthorizedError = () => {
+  const error = new Error('Авторизуйтесь для доступа!');
+  error.statusCode = 401;
+  throw error;
+};
+
 const isAuthorized = (req, res, next) => {
   const auth = req.headers.authorization;
 
   if (!auth) {
-    return res.status(401).send({ message: 'Авторизуйтесь для доступа!' });
+    trowUnauthorizedError();
   }
 
   const token = auth.replace('Bearer ', '');
@@ -14,7 +20,7 @@ const isAuthorized = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'secret');
   } catch (err) {
-    return res.status(401).send({ message: 'Авторизуйтесь для доступа!' });
+    trowUnauthorizedError();
   }
 
   req.user = payload;

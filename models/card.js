@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const isURL = require('validator/lib/isURL'); // import only a subset of the library
 
 const cardSchema = mongoose.Schema({
   name: {
@@ -10,6 +11,10 @@ const cardSchema = mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (v) => isURL(v),
+      message: () => 'Неверный формат ссылки на изображение',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

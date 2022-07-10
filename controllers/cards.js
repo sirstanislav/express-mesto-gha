@@ -27,9 +27,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(new Error('NoValidId'))
-    .then((card) => {
-      res.send(card);
-    })
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.message === 'NoValidId') {
         res
@@ -60,7 +58,7 @@ module.exports.setLike = (req, res) => {
         err,
         res,
         'CastError',
-        '400 — Переданы некорректные данные для постановки лайка',
+        '400 — Переданы некорректные данные для поставки лайка',
       );
     });
 };
