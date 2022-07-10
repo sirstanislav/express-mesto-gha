@@ -1,5 +1,4 @@
 const Card = require('../models/card');
-const { error } = require('../errors/errors');
 
 module.exports.returnCards = (req, res) => {
   Card.find()
@@ -13,14 +12,6 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       res.send(card);
-    })
-    .catch((err) => {
-      error(
-        err,
-        res,
-        'ValidationError',
-        '400 - Переданы некорректные данные при создании карточки',
-      );
     });
 };
 
@@ -34,7 +25,6 @@ module.exports.deleteCard = (req, res) => {
           .status(404)
           .send({ message: '404 — Карточка с указанным _id не найдена.' });
       }
-      error(err, res, 'CastError', '400 - Ошибка удаления карточки');
     });
 };
 
@@ -54,12 +44,6 @@ module.exports.setLike = (req, res) => {
           .status(404)
           .send({ message: '404 — Передан несуществующий _id карточки' });
       }
-      error(
-        err,
-        res,
-        'CastError',
-        '400 — Переданы некорректные данные для поставки лайка',
-      );
     });
 };
 
@@ -79,11 +63,5 @@ module.exports.unsetLike = (req, res) => {
           .status(404)
           .send({ message: '404 — Передан несуществующий _id карточки' });
       }
-      error(
-        err,
-        res,
-        'CastError',
-        '400 — Переданы некорректные данные для снятии лайка',
-      );
     });
 };

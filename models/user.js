@@ -6,23 +6,23 @@ const isURL = require('validator/lib/isURL'); // import only a subset of the lib
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: true,
     validate: {
       validator: (v) => isURL(v),
       message: () => 'Неверный формат ссылки на изображение',
     },
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
@@ -36,23 +36,25 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    unique: true,
     minlength: 8,
     select: false,
   },
 });
 
-userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email })
-  .select('+password') // this — это модель login
-  .then((user) => {
-    if (!user) {
-      return Promise.reject(new Error('Неправильный .then(user)'));
-    }
-    return bcrypt.compare(password, user.password).then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password') // this — это модель login
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Такого пользователя не существует'));
       }
-      return user;
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error('Неправильные почта или пароль'));
+        }
+        return user;
+      });
     });
-  });
+};
 
 module.exports = mongoose.model('user', userSchema);

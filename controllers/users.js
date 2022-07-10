@@ -21,8 +21,8 @@ module.exports.createUser = (req, res) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  if (!password) {
-    return res.status(401).send({ message: 'hahahah' });
+  if (!name && !about && !avatar) {
+    return res.status(200).send({ message: ' Заполните все поля' });
   }
 
   return bcrypt.hash(password, 10)
@@ -30,6 +30,7 @@ module.exports.createUser = (req, res) => {
       name, about, avatar, email, password: hash,
     })
       .then((user) => {
+        console.log(user);
         res.status(200).send({ _id: user.id, email: user.email });
       })
       .catch((err) => {
