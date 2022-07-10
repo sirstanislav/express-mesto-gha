@@ -34,7 +34,7 @@ app.post('/signup', celebrate({
     avatar: Joi.string().required().uri(),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-  }).unknown(true),
+  }),
 }), createUser);
 
 app.use('/', isAuthorized, require('./routes/users'));
