@@ -16,18 +16,17 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  if (req.user._id === req.params.cardId) {
-    Card.findByIdAndRemove(req.params.cardId)
-      .orFail(new Error('NoValidId'))
-      .then((card) => res.send(card))
-      .catch((err) => {
-        if (err.message === 'NoValidId') {
-          res
-            .status(404)
-            .send({ message: '404 — Карточка с указанным _id не найдена.' });
-        }
-      });
-  }
+  Card.findByIdAndRemove(req.params.cardId)
+    .orFail(new Error('NoValidId'))
+    .then((card) => res.send(card))
+    .catch((err) => {
+      console.log(err);
+      if (err.message === 'NoValidId') {
+        res
+          .status(404)
+          .send({ message: '404 — Карточка с указанным _id не найдена.' });
+      }
+    });
 };
 
 module.exports.setLike = (req, res) => {
