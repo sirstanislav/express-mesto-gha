@@ -16,6 +16,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
+  console.log(req.user);
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(new Error('NoValidId'))
     .then((card) => res.send(card))

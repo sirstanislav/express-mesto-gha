@@ -31,7 +31,7 @@ module.exports.createUser = (req, res) => {
     })
       .then((user) => {
         console.log(user);
-        res.status(200).send({ _id: user.id });
+        res.status(200).send({ _id: user.id, email: user.email });
       })
       .catch((err) => {
         error(
