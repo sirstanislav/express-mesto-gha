@@ -20,7 +20,6 @@ module.exports.deleteCard = (req, res) => {
     .orFail(new Error('NoValidId'))
     .then((card) => res.send(card))
     .catch((err) => {
-      console.log(err);
       if (err.message === 'NoValidId') {
         res
           .status(404)
