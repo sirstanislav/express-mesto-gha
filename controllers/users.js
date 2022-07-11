@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { error } = require('../errors/errors');
+const { error, ConflictError } = require('../errors/errors');
 
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
@@ -16,14 +16,10 @@ module.exports.login = (req, res) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
-  if (!name && !about && !avatar) {
-    return res.status(200).send({ message: ' Заполните все поля' });
-  }
 
   return bcrypt.hash(password, 10)
     .then((hash) => User.create({
@@ -33,6 +29,10 @@ module.exports.createUser = (req, res) => {
         res.status(200).send({ _id: user.id, email: user.email });
       })
       .catch((err) => {
+        if (err.code === 11000) {
+          next(new ConflictError('Пользователь с такой почтой уже существует'));
+          return;
+        }
         error(
           err,
           res,
