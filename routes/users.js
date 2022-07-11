@@ -4,11 +4,14 @@ const { celebrate, Joi } = require('celebrate');
 const { REG_LINK } = require('../const/const');
 
 const {
+  returnUser,
   findUsers,
   findUserById,
   updateProfile,
   updateAvatar,
 } = require('../controllers/users');
+
+router.get('/users/me', returnUser);
 
 router.get('/users', findUsers);
 

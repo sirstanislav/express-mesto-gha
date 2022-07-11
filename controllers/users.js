@@ -50,6 +50,18 @@ module.exports.findUsers = (req, res) => {
     });
 };
 
+module.exports.returnUser = (req, res) => {
+  console.log(req.user._id);
+  User.findById(req.user._id)
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({ message: '500 — Ошибка по умолчанию' });
+    });
+};
+
 module.exports.findUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new Error('NoValidId'))
