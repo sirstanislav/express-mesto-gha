@@ -50,6 +50,7 @@ app.use((req, res) => {
 app.use(errors()); // обработчик ошибок celebrate
 
 // здесь обрабатываем все ошибки
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message });
