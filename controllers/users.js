@@ -26,7 +26,10 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     })
       .then((user) => {
-        res.status(200).send({ _id: user.id, email: user.email });
+        const data = {
+          name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+        };
+        res.status(200).send(data);
       })
       .catch((err) => {
         if (err.code === 11000) {
