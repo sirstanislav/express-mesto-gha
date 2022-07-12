@@ -16,15 +16,26 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(new Error('NoValidId'))
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.message === 'NoValidId') {
-        res
-          .status(404)
-          .send({ message: '404 — Карточка с указанным _id не найдена.' });
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: '404 — Карточка с указанным _id не найдена.' });
       }
+      const owner = card.owner.toHexString();
+      if (owner === req.user._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .orFail(new Error('NoValidId'))
+          .then((cardDeleted) => res.send(cardDeleted))
+          .catch((err) => {
+            if (err.message === 'NoValidId') {
+              res
+                .status(404)
+                .send({ message: '404 — Карточка с указанным _id не найдена.' });
+            }
+          });
+        return owner;
+      }
+      return res.status(403).send({ message: '403 — Недостаточно прав' });
     });
 };
 

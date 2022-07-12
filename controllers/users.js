@@ -51,13 +51,11 @@ module.exports.findUsers = (req, res) => {
 };
 
 module.exports.returnUser = (req, res) => {
-  console.log(req.user._id);
   User.findById(req.user._id)
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
       res.status(500).send({ message: '500 — Ошибка по умолчанию' });
     });
 };
