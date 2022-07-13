@@ -10,7 +10,7 @@ const {
 } = require('./controllers/users');
 const { isAuthorized } = require('./middlewares/auth');
 
-const REG_LINK = /^https?:\/\/(www\.)?[a-zA-Z\d-]+\.[\w\d\-.~:/?#[\]@!$&'()*+,;=]{2,}#?$/;
+const { REG_LINK } = require('./const/const');
 
 const app = server();
 
@@ -50,12 +50,13 @@ app.use((req, res) => {
 app.use(errors()); // обработчик ошибок celebrate
 
 // здесь обрабатываем все ошибки
-// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message });
   }
   return res.status(500).send({ message: 'На сервере произошла ошибка' });
+
+  next();
 });
 
 app.listen(PORT, () => {

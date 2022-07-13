@@ -23,21 +23,21 @@ router.post('/cards', celebrate({
 router.delete('/cards/:cardId', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().required().length(24),
   }),
 }), deleteCard);
 
 router.put('/cards/:cardId/likes', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().required().length(24),
   }),
 }), setLike);
 
 router.delete('/cards/:cardId/likes', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().required().length(24),
   }),
 }), unsetLike);
 

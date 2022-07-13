@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const isEmail = require('validator/lib/isEmail'); // import only a subset of the library
-const isURL = require('validator/lib/isURL'); // import only a subset of the library
+const { NoAuthorization } = require('../errors/NoAuthorization');
+
+const { REG_LINK } = require('../const/const');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -19,7 +21,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: (v) => isURL(v),
+      validator(link) {
+        return REG_LINK.test(link);
+      },
       message: () => 'Неверный формат ссылки на изображение',
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
@@ -36,17 +40,16 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    unique: true,
     minlength: 8,
     select: false,
   },
 });
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password, next) {
   return this.findOne({ email }).select('+password') // this — это модель login
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Такого пользователя не существует'));
+        return next(new NoAuthorization('Такого пользователя не существует'));
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
@@ -54,6 +57,11 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
         }
         return user;
       });
+    })
+    .catch((err) => {
+      if (err.name === 'Error') {
+        next(new NoAuthorization('Такого пользователя не существует'));
+      }
     });
 };
 
