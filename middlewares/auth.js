@@ -19,7 +19,7 @@ const isAuthorized = (req, res, next) => {
   }
 
   req.user = payload;
-  return next();
+  next();
 };
 
 module.exports = { isAuthorized };

@@ -66,9 +66,9 @@ module.exports.setLike = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
-        next(new NoValidId('404 — Передан несуществующий _id карточки'));
+        return next(new NoValidId('404 — Передан несуществующий _id карточки'));
       }
-      next(new Error('Ошибка. Что-то пошло не так...'));
+      return next(new Error('Ошибка. Что-то пошло не так...'));
     });
 };
 
@@ -84,8 +84,8 @@ module.exports.unsetLike = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
-        next(new NoValidId('404 — Передан несуществующий _id карточки'));
+        return next(new NoValidId('404 — Передан несуществующий _id карточки'));
       }
-      next(new Error('Ошибка. Что-то пошло не так...'));
+      return next(new Error('Ошибка. Что-то пошло не так...'));
     });
 };

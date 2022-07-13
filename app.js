@@ -39,8 +39,10 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/', isAuthorized, require('./routes/users'));
-app.use('/', isAuthorized, require('./routes/cards'));
+app.use(isAuthorized);
+
+app.use('/', require('./routes/users'));
+app.use('/', require('./routes/cards'));
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Страницы не существует' });
@@ -54,9 +56,9 @@ app.use((err, req, res, next) => {
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message });
   }
-  return res.status(500).send({ message: 'На сервере произошла ошибка' });
+  res.status(500).send({ message: 'На сервере произошла ошибка' });
 
-  next();
+  return next();
 });
 
 app.listen(PORT, () => {
