@@ -34,9 +34,10 @@ module.exports.createUser = (req, res, next) => {
       })
       .catch((err) => {
         if (err.code === 11000) {
-          next(new ConflictError('Пользователь с такой почтой уже существует'));
+          next(new ConflictError('401 - Пользователь с такой почтой уже существует'));
+        } else {
+          next(new ValidationError('404 - Переданы некорректные данные при создании пользователя'));
         }
-        next(new ValidationError('Переданы некорректные данные при создании пользователя'));
       }));
 };
 
