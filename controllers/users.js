@@ -5,7 +5,6 @@ const { ConflictError } = require('../errors/ConflictError');
 const { ValidationError } = require('../errors/ValidationError');
 const { NoValidId } = require('../errors/NoValidId');
 const { CastError } = require('../errors/CastError');
-// const { NoAuthorization } = require('../errors/NoAuthorization');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -15,10 +14,9 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '24h' });
       res.send({ token });
     })
-    .catch((err) => next(err));
-  // .catch(() => {
-  //   next(new NoAuthorization('401 - Авторизация с несуществующими email и password в БД'));
-  // });
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -32,15 +30,19 @@ module.exports.createUser = (req, res, next) => {
     })
       .then((user) => {
         const data = {
-          name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
         };
         res.status(201).send(data);
       })
       .catch((err) => {
+        console.log(err);
         if (err.code === 11000) {
           next(new ConflictError('409 - Пользователь с такой почтой уже существует'));
         } else if (err.name === 'ValidationError') {
-          next(new ValidationError('404 - Переданы некорректные данные при создании пользователя'));
+          next(new ValidationError('400 - Переданы некорректные данные при создании пользователя'));
         } else {
           next(err);
         }
