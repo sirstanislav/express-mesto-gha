@@ -49,7 +49,6 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
           if (!matched) {
             return next(new TrowUnauthorizedError('Неправильные почта или пароль'));
           }
-
           return user;
         });
     });
