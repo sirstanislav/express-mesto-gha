@@ -4,10 +4,10 @@ const { NoValidId } = require('../errors/NoValidId');
 const { NoPermission } = require('../errors/NoPermission');
 const { CastError } = require('../errors/CastError');
 
-module.exports.returnCards = (req, res) => {
+module.exports.returnCards = (req, res, next) => {
   Card.find()
     .then((card) => res.send(card))
-    .catch(() => res.status(500).send({ message: '500 — Ошибка по умолчанию' }));
+    .catch((err) => next(err));
 };
 
 module.exports.createCard = (req, res, next) => {
@@ -20,6 +20,8 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('400 - Переданы некорректные данные в метод создания карточки'));
+      } else {
+        next(err);
       }
     });
 };
@@ -30,14 +32,15 @@ module.exports.deleteCard = (req, res, next) => {
       const owner = card.owner.toHexString();
       if (!card) {
         next(new NoValidId('404 - Карточка с указанным _id не найдена'));
-      }
-      if (owner === req.user._id) {
+      } else if (owner === req.user._id) {
         Card.findByIdAndRemove(req.params.cardId)
           .orFail(new Error('NoValidId'))
           .then((cardDeleted) => res.send(cardDeleted))
           .catch((err) => {
             if (err.message === 'NoValidId') {
               next(new NoValidId('404 - Карточка с указанным _id не найдена'));
+            } else {
+              next(err);
             }
           });
       } else {
@@ -47,9 +50,10 @@ module.exports.deleteCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new CastError('400 —  Карточка с указанным _id не найдена'));
-      }
-      if (err.name === 'TypeError') {
+      } else if (err.name === 'TypeError') {
         next(new NoValidId('404 - Удаление карточки с несуществующим в БД id'));
+      } else {
+        next(err);
       }
     });
 };
@@ -66,9 +70,10 @@ module.exports.setLike = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
-        return next(new NoValidId('404 — Передан несуществующий _id карточки'));
+        next(new NoValidId('404 — Передан несуществующий _id карточки'));
+      } else {
+        next(new Error('Ошибка. Что-то пошло не так...'));
       }
-      return next(new Error('Ошибка. Что-то пошло не так...'));
     });
 };
 
@@ -84,8 +89,9 @@ module.exports.unsetLike = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
-        return next(new NoValidId('404 — Передан несуществующий _id карточки'));
+        next(new NoValidId('404 — Передан несуществующий _id карточки'));
+      } else {
+        next(new Error('Ошибка. Что-то пошло не так...'));
       }
-      return next(new Error('Ошибка. Что-то пошло не так...'));
     });
 };

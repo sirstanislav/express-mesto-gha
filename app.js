@@ -9,6 +9,7 @@ const {
   createUser,
 } = require('./controllers/users');
 const { isAuthorized } = require('./middlewares/auth');
+const { NotFound } = require('./errors/NotFound');
 
 const { REG_LINK } = require('./const/const');
 
@@ -45,8 +46,8 @@ app.use(isAuthorized);
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страницы не существует' });
+app.use((req, res, next) => {
+  next(new NotFound('404 - Страницы не существует'));
 });
 
 // обработчики ошибок

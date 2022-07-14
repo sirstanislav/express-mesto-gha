@@ -5,7 +5,7 @@ const { ConflictError } = require('../errors/ConflictError');
 const { ValidationError } = require('../errors/ValidationError');
 const { NoValidId } = require('../errors/NoValidId');
 const { CastError } = require('../errors/CastError');
-const { NoAuthorization } = require('../errors/NoAuthorization');
+// const { NoAuthorization } = require('../errors/NoAuthorization');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -15,9 +15,10 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '24h' });
       res.send({ token });
     })
-    .catch(() => {
-      next(new NoAuthorization('401 - Авторизация с несуществующими email и password в БД'));
-    });
+    .catch((err) => next(err));
+  // .catch(() => {
+  //   next(new NoAuthorization('401 - Авторизация с несуществующими email и password в БД'));
+  // });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -37,28 +38,25 @@ module.exports.createUser = (req, res, next) => {
       })
       .catch((err) => {
         if (err.code === 11000) {
-          next(new ConflictError('401 - Пользователь с такой почтой уже существует'));
-        }
-        if (err.name === 'ValidationError') {
+          next(new ConflictError('409 - Пользователь с такой почтой уже существует'));
+        } else if (err.name === 'ValidationError') {
           next(new ValidationError('404 - Переданы некорректные данные при создании пользователя'));
+        } else {
+          next(err);
         }
       }));
 };
 
-module.exports.findUsers = (req, res) => {
+module.exports.findUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(500).send({ message: '500 — Ошибка по умолчанию' });
-    });
+    .catch((err) => next(err));
 };
 
-module.exports.returnUser = (req, res) => {
+module.exports.returnUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(500).send({ message: '500 — Ошибка по умолчанию' });
-    });
+    .catch((err) => next(err));
 };
 
 module.exports.findUserById = (req, res, next) => {
@@ -70,8 +68,10 @@ module.exports.findUserById = (req, res, next) => {
     .catch((err) => {
       if (err.message === 'NoValidId') {
         next(new NoValidId('404 - Получение пользователя с несуществующим в БД id'));
-      } else {
+      } else if (err.message === 'CastError') {
         next(new CastError('400 —  Получение пользователя с некорректным id'));
+      } else {
+        next(err);
       }
     });
 };
@@ -93,6 +93,8 @@ module.exports.updateProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('400 —  Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(err);
       }
     });
 };
@@ -114,6 +116,8 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('400 — Переданы некорректные данные при обновлении аватара'));
+      } else {
+        next(err);
       }
     });
 };
