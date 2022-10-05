@@ -1,28 +1,15 @@
 [![Tests](https://github.com/sirstanislav/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/sirstanislav/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/sirstanislav/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/sirstanislav/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+# Project Mesto frontend + backend
 
+## Directories
 
-
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml)
-```
-
-
-## Директории
-
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
+`/routes` - folder with router files
+`/controllers` - folder with user and card controller files
+`/models` - folder with description files for user and card schemes
   
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+The remaining directories are auxiliary, created if necessary by the developer
 
-## Запуск проекта
+## Launch of the project
 
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+`npm run start` - starts the server
+`npm run dev` - starts the server with hot-reload
