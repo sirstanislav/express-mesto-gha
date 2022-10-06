@@ -2,17 +2,22 @@
 
 # Backend of the Mesto project
 
-Directories:
+This is the backend part for the "place" project, where you can register a user, upload images and like them.
 
-`/routes` - folder with router files
-`/controllers` - folder with user and card controller files
-`/models` - folder with description files for user and card schemes
-  
-The remaining directories are auxiliary, created if necessary by the developer
+## Stack:
 
-Launch of the project:
+`Express`, `MongoDB` 
+
+## Launch of the project:
 
 `npm run start` - starts the server
+
 `npm run dev` - starts the server with hot-reload
 
-### The final result is here https://github.com/sirstanislav/react-mesto-api-full
+<div align="center">
+<a href="https://sirstanislav.github.io/mesto/" target="_blank"><img width="100%" height="auto" src="https://github.com/sirstanislav/mesto/blob/main/src/images/preview.png?raw=true"></a>
+</div>
+
+<br>
+
+The final result is repo <a href="https://github.com/sirstanislav/react-mesto-api-full">`react-mesto-api-full`</a>
